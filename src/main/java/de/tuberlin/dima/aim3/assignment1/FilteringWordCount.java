@@ -30,6 +30,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 public class FilteringWordCount extends HadoopJob {
 
@@ -50,7 +51,21 @@ public class FilteringWordCount extends HadoopJob {
   static class FilteringWordCountMapper extends Mapper<Object,Text,Text,IntWritable> {
     @Override
     protected void map(Object key, Text line, Context ctx) throws IOException, InterruptedException {
-      // IMPLEMENT ME
+      StringTokenizer st = new StringTokenizer(line.toString());
+      while(st.hasMoreTokens()) {
+        String word = st.nextToken().toLowerCase();
+        String[] stopWords = {"to", "and", "in", "the"};
+        boolean isStopWord = false;
+        for (int i = 0; i < stopWords.length; i++) {
+          if(word.equals(stopWords[i]))
+            isStopWord=true;
+        }
+        if (!isStopWord) {
+          if (word.charAt(word.length() - 1) < 97 || word.charAt(word.length() - 1) > 122)
+            word = word.substring(0, word.length() - 1);
+          ctx.write(new Text(word), new IntWritable(1));
+        }
+      }
     }
   }
 
@@ -58,7 +73,11 @@ public class FilteringWordCount extends HadoopJob {
     @Override
     protected void reduce(Text key, Iterable<IntWritable> values, Context ctx)
         throws IOException, InterruptedException {
-      // IMPLEMENT ME
+      int sum = 0;
+      for (IntWritable i : values) {
+        sum += i.get();
+      }
+      ctx.write(key, new IntWritable(sum));
     }
   }
 

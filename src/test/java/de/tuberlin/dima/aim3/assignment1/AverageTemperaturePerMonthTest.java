@@ -56,35 +56,9 @@ public class AverageTemperaturePerMonthTest extends HadoopTestCase {
 
     Map<YearAndMonth, Double> results = readResults(new File(outputDir, "part-r-00000"));
 
-    assertEquals(results.get(new YearAndMonth(1990, 8)), 8, EPSILON);
-    assertEquals(results.get(new YearAndMonth(1992, 4)), 7.888d, EPSILON);
-    assertEquals(results.get(new YearAndMonth(1994, 1)), 8.24, EPSILON);
-  }
-
-
-  class YearAndMonth {
-
-    private final int year;
-    private final int month;
-
-    public YearAndMonth(int year, int month) {
-      this.year = year;
-      this.month = month;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o instanceof YearAndMonth) {
-        YearAndMonth other = (YearAndMonth) o;
-        return year == other.year && month == other.month;
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      return 31 * year + month;
-    }
+    assertEquals(8, results.get(new YearAndMonth(1990, 8)), EPSILON);
+    assertEquals(7.888d, results.get(new YearAndMonth(1992, 4)), EPSILON);
+    assertEquals(8.24, results.get(new YearAndMonth(1994, 1)), EPSILON);
   }
 
   private Map<YearAndMonth,Double> readResults(File outputFile) throws IOException {

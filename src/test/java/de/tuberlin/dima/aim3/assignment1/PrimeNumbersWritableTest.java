@@ -48,10 +48,10 @@ public class PrimeNumbersWritableTest {
 
     DataInput in = new DataInputStream(new ByteArrayInputStream(buffer.toByteArray()));
 
-    PrimeNumbersWritable clone1 = new PrimeNumbersWritable();
+    PrimeNumbersWritable clone1 = new PrimeNumbersWritable(original1.getNumberOfNumbers());
     clone1.readFields(in);
 
-    PrimeNumbersWritable clone2 = new PrimeNumbersWritable();
+    PrimeNumbersWritable clone2 = new PrimeNumbersWritable(original2.getNumberOfNumbers());
     clone2.readFields(in);
 
     assertEquals(original1, clone1);

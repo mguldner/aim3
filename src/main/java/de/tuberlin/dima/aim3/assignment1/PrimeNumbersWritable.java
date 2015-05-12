@@ -20,31 +20,40 @@ package de.tuberlin.dima.aim3.assignment1;
 
 import org.apache.hadoop.io.Writable;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 
 public class PrimeNumbersWritable implements Writable {
 
   private int[] numbers;
+  private int numberOfNumbers;
 
   public PrimeNumbersWritable() {
     numbers = new int[0];
+    this.numberOfNumbers=0;
   }
 
   public PrimeNumbersWritable(int... numbers) {
     this.numbers = numbers;
+    this.numberOfNumbers=numbers.length;
+  }
+
+  public PrimeNumbersWritable(int numberOfNumbers) {
+    this.numberOfNumbers = numberOfNumbers;
+    this.numbers = new int[numberOfNumbers];
   }
 
   @Override
   public void write(DataOutput out) throws IOException {
-    //IMPLEMENT ME
+    for (int i : this.numbers)
+      out.writeInt(i);
   }
 
   @Override
   public void readFields(DataInput in) throws IOException {
-    //IMPLEMENT ME
+    for (int i = 0; i < this.numberOfNumbers; i++) {
+      this.numbers[i]=in.readInt();
+    }
   }
 
   @Override
@@ -59,5 +68,9 @@ public class PrimeNumbersWritable implements Writable {
   @Override
   public int hashCode() {
     return Arrays.hashCode(numbers);
+  }
+
+  public int getNumberOfNumbers(){
+    return this.numberOfNumbers;
   }
 }

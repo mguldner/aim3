@@ -60,17 +60,17 @@ public class BookAndAuthorJoinTest extends HadoopTestCase {
 
     bookAndAuthorJoin.setConf(conf);
     bookAndAuthorJoin.run(new String[] { "--authors", authorsFile.getAbsolutePath(),
-        "--books", booksFile.getAbsolutePath(), "--output", outputDir.getAbsolutePath() });
+            "--books", booksFile.getAbsolutePath(), "--output", outputDir.getAbsolutePath() });
 
-    String outputFilename = mapOnly ? "part-m-00000" : "part-r-00000";
-    
+    String outputFilename = mapOnly? "part-m-00000" : "part-r-00000";
+
     Multimap<String, Book> booksByAuthors = readBooksByAuthors(new File(outputDir, outputFilename));
 
     assertTrue(booksByAuthors.containsKey("Charles Bukowski"));
     assertTrue(booksByAuthors.get("Charles Bukowski")
-        .contains(new Book("Confessions of a Man Insane Enough to Live with Beasts", 1965)));
+            .contains(new Book("Confessions of a Man Insane Enough to Live with Beasts", 1965)));
     assertTrue(booksByAuthors.get("Charles Bukowski")
-        .contains(new Book("Hot Water Music", 1983)));
+            .contains(new Book("Hot Water Music", 1983)));
 
     assertTrue(booksByAuthors.containsKey("Fyodor Dostoyevsky"));
     assertTrue(booksByAuthors.get("Fyodor Dostoyevsky").contains(new Book("Crime and Punishment", 1866)));
@@ -83,36 +83,12 @@ public class BookAndAuthorJoinTest extends HadoopTestCase {
 
     Pattern separator = Pattern.compile("\t");
     for (String line : Files.readLines(outputFile, Charsets.UTF_8)) {
+      System.out.println(line);
       String[] tokens = separator.split(line);
       booksByAuthors.put(tokens[0], new Book(tokens[1], Integer.parseInt(tokens[2])));
     }
     return booksByAuthors;
   }
 
-
-  static class Book {
-
-    private final String title;
-    private final int year;
-
-    public Book(String title, int year) {
-      this.title = Preconditions.checkNotNull(title);
-      this.year = year;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o instanceof Book) {
-        Book other = (Book) o;
-        return title.equals(other.title) && year == other.year;
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      return 31 * title.hashCode() + year;
-    }
-  }
-
 }
+
